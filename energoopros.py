@@ -66,7 +66,7 @@ def request_data(street, timedelta):
 
 async def scheduled(wait_for):
     old_date = dt.datetime.now()
-    old_date = old_date + dt.timedelta(days=-2)
+    #old_date = old_date + dt.timedelta(days=-2)
     while True:
         await asyncio.sleep(wait_for)
         new_date = dt.datetime.now()
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     async def process_help_command(message: types.Message):
         await message.reply("""Данный бот раз в сутки проверяет списки адресов на отключение электричества, 
                             Для пополнения списка адресов просто введите необходимый адрес в формате Улица НомерДома
-                            Бот понмает такие команды:
+                            Бот понимает такие команды:
                             /allclear - очистить весь список адресов
                             /test - послать тестовый запрос по всему списку для данного пользователя
                             /listaddress - вывести список всех адресов для данного пользователя
