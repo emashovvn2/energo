@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import config
 import logging
 import datetime as dt
@@ -66,11 +67,11 @@ def request_data(street, timedelta):
 
 async def scheduled(wait_for):
     old_date = dt.datetime.now()
-    old_date = old_date + dt.timedelta(days=-2)
+    #old_date = old_date + dt.timedelta(days=-2)
     while True:
         await asyncio.sleep(wait_for)
         new_date = dt.datetime.now()
-        if ((new_date.day != old_date.day) and (new_date.hour > 10)):
+        if ((new_date.day != old_date.day) and (new_date.hour > 4)):
             old_date = new_date
             users_with_subscribe = db.users_with_subscribe()
             for current_user in users_with_subscribe:
@@ -83,9 +84,7 @@ async def scheduled(wait_for):
                             print(resp_elem[1])
                             if find_home(str(resp_elem[1]), current_user[1]):
                                 time = re.sub(r'<.+>', '', str(resp_elem[0]))
-                                await bot.send_message(
-                                    f"Обнаружено уведомление об отключении электроэнергии по улице - {current_user[0]}, номер дома - {current_user[1]} \n Во время "
-                                    f"{time}")
+                                await bot.send_message("Обнаружено уведомление об отключении электроэнергии по улице - " + str(current_user[0]) + " , номер дома - " + str(current_user[1]) +  " Во время " + str(time))
                             """print(resp_elem)
                             # and find_home(response, j[1])
                             #await message.reply(f"Обнаружено уведомление об отключении электроэнергии по улице - {i[0]}, номер дома - {i[1]}")
@@ -157,9 +156,7 @@ if __name__ == "__main__":
                         for resp_elem in response:
                             if find_home(str(resp_elem[1]), current_address[1]):
                                 time = re.sub(r'<.+>', '', str(resp_elem[0]))
-                                await message.reply(
-                                    f"Обнаружено уведомление об отключении электроэнергии по улице - {current_address[0]}, номер дома - {current_address[1]} \n Во время "
-                                    f"{time}")
+                                await message.reply("Обнаружено уведомление об отключении электроэнергии по улице -" + str(current_address[0]) + ", номер дома - " + str(current_address[1]) + "  Во время " + str(time))
 
 
     # Выдает все имеющиеся в базе адреса для данного пользователя

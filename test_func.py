@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python3
 import energoopros
 
 test_string = '''[<div class="po_time">
