@@ -67,24 +67,32 @@ def request_data(street, timedelta):
 
 async def scheduled(wait_for):
     old_date = dt.datetime.now()
+    #print(old_date)
     #old_date = old_date + dt.timedelta(days=-2)
     while True:
         await asyncio.sleep(wait_for)
         new_date = dt.datetime.now()
+        print(new_date)
+        #exit()
         if ((new_date.day != old_date.day) and (new_date.hour > 4)):
+            #print("ya tut")
             old_date = new_date
             users_with_subscribe = db.users_with_subscribe()
+            #print(users_with_subscribe)
             for current_user in users_with_subscribe:
+                #print(current_user)
                 addr = db.list_address(current_user[0])
                 for current_address in addr:
+                    #print(current_address)
                     response = request_data(current_address[0], 1)
                     if (response):
                         for resp_elem in response:
-                            print(resp_elem[0])
-                            print(resp_elem[1])
-                            if find_home(str(resp_elem[1]), current_user[1]):
+                            #print(resp_elem[0])
+                            #print(resp_elem[1])
+                            if find_home(str(resp_elem[1]), current_address[1]):
                                 time = re.sub(r'<.+>', '', str(resp_elem[0]))
-                                await bot.send_message("Обнаружено уведомление об отключении электроэнергии по улице - " + str(current_user[0]) + " , номер дома - " + str(current_user[1]) +  " Во время " + str(time))
+                                #print("Обнаружено уведомление об отключении электроэнергии по улице - " + str(current_address[0]) + " , номер дома - " + str(current_address[1]) +  " Во время " + str(time))
+                                await bot.send_message(current_user[0], "Обнаружено уведомление об отключении электроэнергии по улице - " + str(current_address[0]) + " , номер дома - " + str(current_address[1]) +  " Во время " + str(time))
                             """print(resp_elem)
                             # and find_home(response, j[1])
                             #await message.reply(f"Обнаружено уведомление об отключении электроэнергии по улице - {i[0]}, номер дома - {i[1]}")
@@ -209,6 +217,8 @@ if __name__ == "__main__":
             await message.answer(
                 'Или улицы - ' + street + ' - в городе Томске нет, или на ней не выключают свет. Не стоит добавлять такой уникальный объект в нашу базу')
 
-
-    dp.loop.create_task(scheduled(5))  # пока что оставим 10 секунд (в качестве теста)
+    #print(dp)
+    #dp.loop.create_task(scheduled(5))  # пока что оставим 10 секунд (в качестве теста)
+    loop = asyncio.get_event_loop()
+    loop.create_task(scheduled(3600))
     executor.start_polling(dp, skip_updates=True)
